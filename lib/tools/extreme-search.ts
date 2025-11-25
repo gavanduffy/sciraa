@@ -7,7 +7,7 @@
 
 import Exa from 'exa-js';
 import { Daytona } from '@daytonaio/sdk';
-import { generateObject, generateText, stepCountIs, tool } from 'ai';
+import { generateObject, generateText, stepCountIs, tool, gateway } from 'ai';
 import type { UIMessageStreamWriter } from 'ai';
 import { z } from 'zod';
 import { serverEnv } from '@/env/server';
@@ -16,7 +16,7 @@ import { SNAPSHOT_NAME } from '@/lib/constants';
 import { ChatMessage } from '../types';
 import FirecrawlApp from '@mendable/firecrawl-js';
 import { getTweet } from 'react-tweet/api';
-import { XaiProviderOptions, xai } from '@ai-sdk/xai';
+import { XaiProviderOptions } from '@ai-sdk/xai';
 
 const pythonLibsAvailable = [
   'pandas',
@@ -581,7 +581,7 @@ ${JSON.stringify(plan)}
             const searchEndDate = endDate || new Date().toISOString().split('T')[0];
 
             const { text, sources } = await generateText({
-              model: xai('grok-4-fast-non-reasoning'),
+              model: gateway('xai/grok-4-fast-non-reasoning'),
               system: `You are a helpful assistant that searches for X posts and returns the results in a structured format. You will be given a search query and a list of X handles to search from. You will then search for the posts and return the results in a structured format. You will also cite the sources in the format [Source No.]. Go very deep in the search and return the most relevant results.`,
               messages: [{ role: 'user', content: query }],
               maxOutputTokens: 10,

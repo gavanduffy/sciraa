@@ -1,11 +1,9 @@
 import { wrapLanguageModel, customProvider, extractReasoningMiddleware, gateway } from 'ai';
 
 import { createOpenAI, openai } from '@ai-sdk/openai';
-import { xai } from '@ai-sdk/xai';
 import { groq } from '@ai-sdk/groq';
 import { mistral } from '@ai-sdk/mistral';
 import { google } from '@ai-sdk/google';
-import { anthropic } from "@ai-sdk/anthropic";
 import { cohere } from '@ai-sdk/cohere';
 
 const middleware = extractReasoningMiddleware({
@@ -22,29 +20,19 @@ const huggingface = createOpenAI({
   apiKey: process.env.HF_TOKEN,
 });
 
-const anannas = createOpenAI({
-  baseURL: 'https://api.anannas.ai/v1',
-  apiKey: process.env.ANANNAS_API_KEY,
-  headers: {
-    'HTTP-Referer': 'https://scira.ai',
-    'X-Title': 'Scira AI',
-    'Content-Type': 'application/json',
-  },
-});
-
 export const scira = customProvider({
   languageModels: {
-    'scira-default': xai('grok-4-fast-non-reasoning'),
+    'scira-default': gateway('xai/grok-4-fast-non-reasoning'),
     'scira-nano': groq('llama-3.3-70b-versatile'),
-    'scira-name': anannas.chat('meta-llama/llama-3.3-70b-instruct'),
-    'scira-grok-3-mini': xai('grok-3-mini'),
-    'scira-grok-3': xai('grok-3'),
-    'scira-grok-4': xai('grok-4'),
-    'scira-grok-4-fast': xai('grok-4-fast-non-reasoning'),
-    'scira-grok-4-fast-think': xai('grok-4-fast'),
-    'scira-code': xai('grok-code-fast-1'),
+    'scira-name': gateway('groq/meta-llama/llama-3.3-70b-instruct'),
+    'scira-grok-3-mini': gateway('xai/grok-3-mini'),
+    'scira-grok-3': gateway('xai/grok-3'),
+    'scira-grok-4': gateway('xai/grok-4'),
+    'scira-grok-4-fast': gateway('xai/grok-4-fast-non-reasoning'),
+    'scira-grok-4-fast-think': gateway('xai/grok-4-fast'),
+    'scira-code': gateway('xai/grok-code-fast-1'),
     'scira-enhance': groq('moonshotai/kimi-k2-instruct-0905'),
-    'scira-follow-up': xai('grok-4-fast-non-reasoning'),
+    'scira-follow-up': gateway('xai/grok-4-fast-non-reasoning'),
     'scira-qwen-4b': huggingface.chat('Qwen/Qwen3-4B-Instruct-2507:nscale'),
     'scira-qwen-4b-thinking': wrapLanguageModel({
       model: huggingface.chat('Qwen/Qwen3-4B-Thinking-2507:nscale'),
@@ -78,11 +66,11 @@ export const scira = customProvider({
       middleware,
     }),
     'scira-deepseek-r1': wrapLanguageModel({
-      model: anannas.chat('deepseek/deepseek-r1'),
+      model: gateway('deepseek/deepseek-r1'),
       middleware,
     }),
     'scira-deepseek-r1-0528': wrapLanguageModel({
-      model: anannas.chat('deepseek/deepseek-r1-0528'),
+      model: gateway('deepseek/deepseek-r1-0528'),
       middleware,
     }),
     'scira-qwen-coder': huggingface.chat('Qwen/Qwen3-Coder-480B-A35B-Instruct:cerebras'),
@@ -115,7 +103,7 @@ export const scira = customProvider({
     'scira-cmd-a': cohere('command-a-03-2025'),
     'scira-cmd-a-think': cohere('command-a-reasoning-08-2025'),
     'scira-kimi-k2-v2': groq('moonshotai/kimi-k2-instruct-0905'),
-    'scira-haiku': anannas.chat('anthropic/claude-3-5-haiku-20241022'),
+    'scira-haiku': gateway('anthropic/claude-3-5-haiku-20241022'),
     'scira-mistral-medium': mistral('mistral-medium-2508'),
     'scira-magistral-small': mistral('magistral-small-2509'),
     'scira-magistral-medium': mistral('magistral-medium-2509'),
@@ -124,7 +112,7 @@ export const scira = customProvider({
     'scira-google-think': google('gemini-flash-latest'),
     'scira-google-pro': google('gemini-2.5-pro'),
     'scira-google-pro-think': google('gemini-2.5-pro'),
-    'scira-anthropic': anthropic('claude-sonnet-4-5'),
+    'scira-anthropic': gateway('anthropic/claude-sonnet-4-5'),
   },
 });
 
